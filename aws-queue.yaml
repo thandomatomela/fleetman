@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue 
+spec:
+  selector:
+    matchLabels:  
+      app: queue
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: queue
+    spec: 
+      containers:
+      - name: queue
+        image: richardchesterwood/k8s-fleetman-queue:resources
+        resources:
+          requests:
+            memory: 300Mi
+            cpu: 1
+          limits:
+            memory: 500Mi
+            cpu: 1
+ 
+---
+           

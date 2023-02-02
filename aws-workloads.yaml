@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: position-simulator
+spec:
+   # 3 pods should exist at all times
+   selector:
+     matchLabels:
+       app: position-simulator
+   replicas: 2
+   template:
+     metadata: 
+       labels:
+         app: position-simulator
+     spec:
+       containers:
+       - name: position-simulator
+         image: richardchesterwood/k8s-fleetman-position-simulator:resources
+         env:
+         - name: SPRING_PROFILES_ACTIVE
+           value: production-microservice
+         resources:
+           requests:
+             memory: 200Mi
+             cpu: 50m
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: position-tracker
+spec:
+   # 3 pods should exist at all times
+   selector:
+     matchLabels:
+       app: position-tracker
+   replicas: 1
+   template:
+     metadata: 
+       labels:
+         app: position-tracker
+     spec:
+       containers:
+       - name: position-tracker
+         image: richardchesterwood/k8s-fleetman-position-tracker:resources
+         env:
+         - name: SPRING_PROFILES_ACTIVE
+           value: production-microservice
+         resources:
+           requests:
+             memory: 200Mi
+             cpu: 50m
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: api-gateway
+spec:
+   # 2 pods should exist at all times
+   selector:
+     matchLabels:
+       app:  api-gateway
+   replicas: 1
+   template:
+     metadata: 
+       labels:
+         app:  api-gateway
+     spec:
+       containers:
+       - name:  api-gateway
+         image: richardchesterwood/k8s-fleetman-api-gateway:performance
+         env:
+         - name: SPRING_PROFILES_ACTIVE
+           value: production-microservice
+         resources:
+           requests:
+             memory: 300Mi
+             cpu: 50m
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: web-app
+spec:
+   # 3 pods should exist at all times
+   selector:
+     matchLabels:
+       app:  web-app
+   replicas: 2
+   template:
+     metadata: 
+       labels:
+         app:  web-app
+     spec:
+       containers:
+       - name:  web-app
+         image: richardchesterwood/k8s-fleetman-webapp-angular:release2
+         env:
+         - name: SPRING_PROFILES_ACTIVE
+           value: production-microservice
+         resources:
+           requests:
+             memory: 100Mi
+             cpu: 50m
+---
